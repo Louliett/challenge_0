@@ -6,12 +6,9 @@ const rl = readline.createInterface({
     input: process.stdin,
     output: process.stdout
 });
-//create a prompt after each input
-rl.setPrompt('> ');
-rl.prompt();
 
 //just a simple menu with commands
-var menu = " Please select an option: \n 0. Exit the simulation. \n 1. Move forward. \n 2. Move backwards. \n 3. Rotate 90 degrees clockwise. \n 4. Rotate 90 degrees counterclockwise. \n ";
+var menu = " Please input a series of commands separated by comma: \n 0. Exit the simulation. \n 1. Move forward. \n 2. Move backwards. \n 3. Rotate 90 degrees clockwise. \n 4. Rotate 90 degrees counterclockwise. \n ";
 
 //request the size of the board and position
 //NOTE: the board needs 4 parameters separated by comma to work: width, height, y, x.
@@ -20,60 +17,59 @@ var menu = " Please select an option: \n 0. Exit the simulation. \n 1. Move forw
 rl.question('Please input the size of table and position separated by comma:', (answer) => {
     //get rid of the commas
     var numbers = answer.replace(/,/g, '');
-        //extract the values for the board dimensions
+    //extract the values for the board dimensions
     var width = parseInt(numbers.charAt(0));
     var height = parseInt(numbers.charAt(1));
-        //extract the values for the position
+    //extract the values for the position
     var x = parseInt(numbers.charAt(2));
     var y = parseInt(numbers.charAt(3));
     var position = [y, x];
-        //define the default orientation of the object
+    //define the default orientation of the object
     var orientation = 'north';
 
     console.log('board created with dimensions: ' + width + ' x ' + height);
     console.log('object position: ' + position);
     console.log('\n');
 
-    //pause the readline to display the menu
-    rl.pause();
-    console.log(menu);
-    rl.resume();
-
     //request the list of commands separated by comma
     //NOTE: just like before, the input is not handled, if the user did not respect the format sepcified in the task, it's not going to work
     //reason: it's not the goal of the task
-    rl.on('line', function (answer) {
-        //display the menu after each stdin
-        console.log(menu);
-        answer = parseInt(answer);
-        //switch case to input the commands one by one
-        //once the user presses '0' the switch breaks and display the position
-        switch (answer) {
-            case 0:
-                console.log('Position: ' + position);
-                process.exit(0);
-                break;
-            case 1:
-                console.log('moved forward');
-                position = forward(orientation, position, width, height);
-                break;
-            case 2:
-                console.log('moved backwards');
-                position = backwards(orientation, position, width, height);
-                break;
-            case 3:
-                console.log('rotated clockwise');
-                orientation = rotateClockWise(orientation);
-                break;
-            case 4:
-                console.log('rotated counterclockwise');
-                orientation = rotateCounterClockWise(orientation);
-                break;
-            default:
-                console.log('invalid input');
-                break;
-        } 
-        rl.prompt();
+    rl.question(menu, (answer2) => {
+        // get rid of the commas
+        var raw_commands = answer2.replace(/,/g, '');
+        var commands = [];
+        //put the commands into an array
+        //this could have been done without even putting the characters into the array
+        for (let i = 0; i < raw_commands.length; i++) {
+            commands.push(raw_commands.charAt(i));
+        }
+        //iterate throuh the array and at each index pass the value to the switch
+        for (let j = 0; j < commands.length; j++) {
+            var option = parseInt(commands[j]);
+            //at each iteration, run one of the cases from the switch
+            switch (option) {
+                case 0:
+                    console.log('Position: ' + position);
+                    process.exit(0);
+                    break;
+                case 1:
+                    position = forward(orientation, position, width, height);
+                    break;
+                case 2:
+                    position = backwards(orientation, position, width, height);
+                    break;
+                case 3:
+                    orientation = rotateClockWise(orientation);
+                    break;
+                case 4:
+                    orientation = rotateCounterClockWise(orientation);
+                    break;
+                default:
+                    console.log('invalid input');
+                    break;
+            }
+        }
+
     });
     
 });
