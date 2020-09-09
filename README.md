@@ -13,12 +13,13 @@ by writing:
 app.js takes commands one by one and each times displays feedback.
 1. takes as an input the board width, height and position of the object: '4,4,2,2'
 2. the menu asks for input to move the object across the board or to rotate:
-:>1 
-the object moved forward
-:>2
-the object moved backwards
-:>0
-position [0,1]
+
+user pressed 1 
+result: the object moved forward
+user pressed 2
+result: the object moved backwards
+user pressed 0
+result: position [0,1]
 
 By pressing 0 the program will display position e.g. [0,1] if the object is on board or [-1,-1] if the object fell of the board.
 
